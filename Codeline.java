@@ -1,45 +1,30 @@
 /**
  * CodeLine.java
  * -------------
- * A simple model (data class) that holds one line of source code together
- * with its assigned classification type.
+ * Model class that holds a single line of source code together
+ * with its assigned classification type (from LineType enum).
  *
- * Used as the element type stored in the ArrayList inside CodeClassifier.
+ * Used as the element stored in the ArrayList inside CodeClassifier.
  */
 public class CodeLine {
 
-    // ── Classification labels ────────────────────────────────────────────────
-    public static final String START    = "START";
-    public static final String PROCESS  = "PROCESS";
-    public static final String DECISION = "DECISION";
-    public static final String LOOP     = "LOOP";
-    public static final String END      = "END";
-
-    // ── Fields ───────────────────────────────────────────────────────────────
-    private final String text;   // The original (trimmed) line of code
-    private final String type;   // One of the constants above
+    private String   code;   // The trimmed source code text
+    private LineType type;   // START / PROCESS / DECISION / LOOP / END
 
     /**
-     * Constructs a CodeLine with the given text and classification type.
-     *
-     * @param text The trimmed source code line.
-     * @param type The classification type (START / PROCESS / DECISION / LOOP / END).
+     * @param code The trimmed source code line
+     * @param type The classification type from LineType enum
      */
-    public CodeLine(String text, String type) {
-        this.text = text;
+    public CodeLine(String code, LineType type) {
+        this.code = code;
         this.type = type;
     }
 
-    // ── Getters ───────────────────────────────────────────────────────────────
+    public String   getCode() { return code; }
+    public LineType getType() { return type; }
 
-    public String getText() { return text; }
-    public String getType() { return type; }
-
-    /**
-     * Friendly string for debug printing.
-     */
     @Override
     public String toString() {
-        return String.format("%-10s | %s", type, text);
+        return String.format("%-10s | %s", type, code);
     }
 }

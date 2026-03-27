@@ -6,41 +6,41 @@ import java.util.Scanner;
  * ---------
  * Entry point for the Mini Code Analyzer.
  *
- * Wires all modules together in this pipeline:
- *
- *   InputHandler  →  KeywordDetector  →  CodeClassifier  →  FlowchartGenerator
+ * Pipeline:
+ *   InputHandler --> KeywordDetector --> CodeClassifier --> FlowchartGenerator
  *
  * Run modes:
- *   1. DEMO mode  — runs a built-in sample so you can see output immediately.
- *   2. LIVE mode  — you type your own code into the console.
+ *   1 -> DEMO  : uses built-in sample code (runs immediately)
+ *   2 -> LIVE  : you type your own code, finish with END_INPUT
  */
 public class Main {
 
     public static void main(String[] args) {
 
-        // ── Step 0: Choose run mode ───────────────────────────────────────────
+        // ── Mode selection ────────────────────────────────────────────────
         System.out.println();
-        System.out.println("╔═════════════════════════════════════════════╗");
-        System.out.println("║       MINI CODE ANALYZER  v1.0              ║");
-        System.out.println("║  Visualize your code as a flowchart         ║");
-        System.out.println("╚═════════════════════════════════════════════╝");
+        System.out.println("==========================================");
+        System.out.println("        MINI CODE ANALYZER  v1.0         ");
+        System.out.println("  Transforms source code into flowcharts  ");
+        System.out.println("==========================================");
         System.out.println();
-        System.out.println("  Select mode:");
-        System.out.println("    1  →  Run DEMO (built-in sample code)");
-        System.out.println("    2  →  Enter YOUR OWN code");
-        System.out.print(  "  Your choice: ");
+        System.out.println("  Select run mode:");
+        System.out.println("    1  ->  DEMO  (built-in sample code)");
+        System.out.println("    2  ->  LIVE  (enter your own code)");
+        System.out.println();
+        System.out.print("  Your choice: ");
 
         Scanner sc = new Scanner(System.in);
         String choice = sc.nextLine().trim();
 
-        // ── Step 1: Collect input ─────────────────────────────────────────────
+        // ── Step 1: Collect and clean input ───────────────────────────────
         InputHandler inputHandler = new InputHandler();
         List<String> lines;
 
         if (choice.equals("1")) {
-            lines = inputHandler.readFromString(buildDemoCode());
             System.out.println();
-            System.out.println("  [DEMO MODE — analyzing built-in sample code]");
+            System.out.println("  [DEMO MODE - analyzing built-in sample code]");
+            lines = inputHandler.readFromString(demoCode());
         } else {
             System.out.println();
             lines = inputHandler.readInput();
@@ -48,49 +48,44 @@ public class Main {
 
         if (lines.isEmpty()) {
             System.out.println();
-            System.out.println("  ⚠  No code was entered. Please try again.");
+            System.out.println("  No code was entered. Exiting.");
             return;
         }
 
-        // ── Step 2: Detect keywords (HashSet lookup) ──────────────────────────
+        // ── Step 2: Build keyword detector (uses HashSet internally) ──────
         KeywordDetector detector = new KeywordDetector();
 
-        // ── Step 3: Classify each line ────────────────────────────────────────
+        // ── Step 3: Classify each line into START/PROCESS/DECISION/LOOP/END
         CodeClassifier classifier = new CodeClassifier(detector);
         List<CodeLine> classified = classifier.classify(lines);
 
-        // ── Step 4: Show raw classification table ─────────────────────────────
+        // ── Step 4: Show the classification table ─────────────────────────
         classifier.printClassificationTable(classified);
 
-        // ── Step 5: Generate and print the flowchart ──────────────────────────
-        FlowchartGenerator generator = new FlowchartGenerator();
-        generator.generate(classified);
+        // ── Step 5: Render the ASCII flowchart + summary ──────────────────
+        FlowchartGenerator generator = new FlowchartGenerator(classified);
+        generator.generate();
     }
 
-    // ── Demo code ─────────────────────────────────────────────────────────────
-
     /**
-     * A small but representative Java snippet used in DEMO mode.
-     * It exercises all four classification types.
+     * Built-in demo code that exercises all five classification types.
      */
-    private static String buildDemoCode() {
-        return String.join("\n",
-                "int score = 85;",
-                "int grade = 0;",
-                "if (score >= 90) {",
-                "    grade = 1;",
-                "} else if (score >= 75) {",
-                "    grade = 2;",
-                "} else {",
-                "    grade = 3;",
-                "}",
-                "for (int i = 0; i < 3; i++) {",
-                "    System.out.println(grade);",
-                "}",
-                "while (score > 0) {",
-                "    score = score - 10;",
-                "}",
-                "return grade;"
-        );
+    private static String demoCode() {
+        return  "int score = 85;\n"
+              + "int grade = 0;\n"
+              + "if (score >= 90) {\n"
+              + "    grade = 1;\n"
+              + "} else if (score >= 75) {\n"
+              + "    grade = 2;\n"
+              + "} else {\n"
+              + "    grade = 3;\n"
+              + "}\n"
+              + "for (int i = 0; i < 3; i++) {\n"
+              + "    System.out.println(grade);\n"
+              + "}\n"
+              + "while (score > 0) {\n"
+              + "    score = score - 10;\n"
+              + "}\n"
+              + "return grade;";
     }
 }
