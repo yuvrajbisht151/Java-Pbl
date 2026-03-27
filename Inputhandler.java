@@ -2,27 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * InputHandler.java
- * -----------------
- * Responsibilities:
- *   1. Accept multi-line source code from the user via the console.
- *   2. Clean the input: trim whitespace, remove blank lines, skip comments.
- *
- * Two modes:
- *   - readInput()          : live console mode (type END_INPUT to finish)
- *   - readFromString(code) : demo/test mode using a pre-built string
- */
+
 public class InputHandler {
 
     private static final String STOP_SIGNAL = "END_INPUT";
 
-    /**
-     * Reads code interactively from the console.
-     * The user types END_INPUT on its own line to signal end of input.
-     *
-     * @return Cleaned list of non-empty, trimmed code lines
-     */
+   
     public List<String> readInput() {
         Scanner scanner = new Scanner(System.in);
         List<String> rawLines = new ArrayList<>();
@@ -47,12 +32,7 @@ public class InputHandler {
         return cleanInput(rawLines);
     }
 
-    /**
-     * Reads code from a pre-built string — used for demo / testing.
-     *
-     * @param code Raw source code as a single multi-line string
-     * @return Cleaned list of non-empty, trimmed code lines
-     */
+    
     public List<String> readFromString(String code) {
         List<String> rawLines = new ArrayList<>();
         String[] lines = code.split("\n");
@@ -62,15 +42,7 @@ public class InputHandler {
         return cleanInput(rawLines);
     }
 
-    /**
-     * Cleans raw lines:
-     *   - Trims leading/trailing whitespace
-     *   - Removes blank lines
-     *   - Removes comment-only lines (starting with //)
-     *
-     * @param rawLines Unprocessed input lines
-     * @return Cleaned list ready for classification
-     */
+   
     private List<String> cleanInput(List<String> rawLines) {
         List<String> cleaned = new ArrayList<>();
 
@@ -78,10 +50,10 @@ public class InputHandler {
             String trimmed = line.trim();
 
             if (trimmed.isEmpty()) {
-                continue;                   // skip blank lines
+                continue;                   
             }
             if (trimmed.startsWith("//")) {
-                continue;                   // skip comment-only lines
+                continue;                  
             }
 
             cleaned.add(trimmed);
