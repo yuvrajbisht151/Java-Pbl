@@ -1,23 +1,12 @@
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Main.java
- * ---------
- * Entry point for the Mini Code Analyzer.
- *
- * Pipeline:
- *   InputHandler --> KeywordDetector --> CodeClassifier --> FlowchartGenerator
- *
- * Run modes:
- *   1 -> DEMO  : uses built-in sample code (runs immediately)
- *   2 -> LIVE  : you type your own code, finish with END_INPUT
- */
+
 public class Main {
 
     public static void main(String[] args) {
 
-        // ── Mode selection ────────────────────────────────────────────────
+        
         System.out.println();
         System.out.println("==========================================");
         System.out.println("        MINI CODE ANALYZER  v1.0         ");
@@ -33,7 +22,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         String choice = sc.nextLine().trim();
 
-        // ── Step 1: Collect and clean input ───────────────────────────────
+      
         InputHandler inputHandler = new InputHandler();
         List<String> lines;
 
@@ -52,24 +41,22 @@ public class Main {
             return;
         }
 
-        // ── Step 2: Build keyword detector (uses HashSet internally) ──────
+       
         KeywordDetector detector = new KeywordDetector();
 
-        // ── Step 3: Classify each line into START/PROCESS/DECISION/LOOP/END
+      
         CodeClassifier classifier = new CodeClassifier(detector);
         List<CodeLine> classified = classifier.classify(lines);
 
-        // ── Step 4: Show the classification table ─────────────────────────
+        
         classifier.printClassificationTable(classified);
 
-        // ── Step 5: Render the ASCII flowchart + summary ──────────────────
+       
         FlowchartGenerator generator = new FlowchartGenerator(classified);
         generator.generate();
     }
 
-    /**
-     * Built-in demo code that exercises all five classification types.
-     */
+   
     private static String demoCode() {
         return  "int score = 85;\n"
               + "int grade = 0;\n"
