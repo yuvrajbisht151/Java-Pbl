@@ -2,40 +2,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * FlowchartGenerator.java
- * -----------------------
- * Responsibilities:
- *   1. Accept the classified List<CodeLine> from CodeClassifier.
- *   2. Print a structured, ASCII-only flowchart to the console.
- *   3. Print a summary statistics table at the end.
- *
- * ASCII-only design — no Unicode box-drawing characters.
- * Uses only: + - | = * v characters that work in every terminal.
- *
- * Node styles:
- *   START    ->  +========+  (double-line border using =)
- *   PROCESS  ->  +--------+  (single-line border using -)
- *   DECISION ->  / ~~~~~~ \  (slanted border to suggest a diamond)
- *   LOOP     ->  * ~~~~~~ *  (star border to suggest a cycle)
- *   END      ->  +========+  (double-line border using =)
- */
+
 public class FlowchartGenerator {
 
     private static final int MAX_CODE_LEN = 40;
 
     private final List<CodeLine> codeLines;
 
-    /**
-     * @param codeLines The classified list from CodeClassifier.classify()
-     */
+    
     public FlowchartGenerator(List<CodeLine> codeLines) {
         this.codeLines = codeLines;
     }
 
-    /**
-     * Renders the full flowchart followed by the summary table.
-     */
+    
     public void generate() {
         System.out.println();
         System.out.println("============================================================");
@@ -52,7 +31,7 @@ public class FlowchartGenerator {
             CodeLine cl = codeLines.get(i);
             printNode(cl);
 
-            // Print connecting arrow between every node except after the last
+           
             if (i < codeLines.size() - 1) {
                 printArrow();
             }
@@ -62,13 +41,6 @@ public class FlowchartGenerator {
         printSummaryTable();
     }
 
-    // ------------------------------------------------------------------
-    // Node rendering
-    // ------------------------------------------------------------------
-
-    /**
-     * Dispatches to the correct visual style based on LineType.
-     */
     private void printNode(CodeLine cl) {
         switch (cl.getType()) {
             case START:
@@ -91,13 +63,7 @@ public class FlowchartGenerator {
         }
     }
 
-    /**
-     * START node — uses === border.
-     *
-     *   +====================+
-     *   |  [START] text      |
-     *   +====================+
-     */
+   
     private void printStartNode(String code) {
         String content = "  [START]  " + fit(code, MAX_CODE_LEN);
         String border  = repeat("=", content.length() + 2);
@@ -106,13 +72,7 @@ public class FlowchartGenerator {
         System.out.println("  +" + border + "+");
     }
 
-    /**
-     * PROCESS node — uses --- border.
-     *
-     *   +--------------------+
-     *   |  PROCESS: text     |
-     *   +--------------------+
-     */
+   
     private void printProcessNode(String code) {
         String content = "  PROCESS: " + fit(code, MAX_CODE_LEN);
         String border  = repeat("-", content.length() + 2);
@@ -121,14 +81,6 @@ public class FlowchartGenerator {
         System.out.println("  +" + border + "+");
     }
 
-    /**
-     * DECISION node — slanted lines suggest a diamond shape.
-     *
-     *   /---------------------\
-     *   |  DECISION: text     |
-     *   \---------------------/
-     *         YES |   NO ---->
-     */
     private void printDecisionNode(String code) {
         String content = "  DECISION: " + fit(code, MAX_CODE_LEN);
         String border  = repeat("-", content.length() + 2);
@@ -138,15 +90,7 @@ public class FlowchartGenerator {
         System.out.println("        YES |       NO ---->");
     }
 
-    /**
-     * LOOP node — star border + back-edge indicator.
-     *
-     *   *---------------------*
-     *   |  LOOP: text         |
-     *   *---------------------*
-     *     |                   ^
-     *     +-- (loop body) ----+
-     */
+    
     private void printLoopNode(String code) {
         String content = "  LOOP: " + fit(code, MAX_CODE_LEN);
         String border  = repeat("-", content.length() + 2);
@@ -159,15 +103,9 @@ public class FlowchartGenerator {
         System.out.println("    |____________ back to condition _______________/");
     }
 
-    /**
-     * END node — uses === border, same style as START.
-     *
-     *   +====================+
-     *   |  [END] text        |
-     *   +====================+
-     */
+  
     private void printEndNode(String code) {
-        // Skip individual closing braces mid-flow (they are noise)
+       
         if (code.equals("}")) return;
 
         String content = "  [END]  " + fit(code, MAX_CODE_LEN);
@@ -177,24 +115,13 @@ public class FlowchartGenerator {
         System.out.println("  +" + border + "+");
     }
 
-    /**
-     * Arrow connecting two nodes.
-     *
-     *      |
-     *      v
-     */
+  
     private void printArrow() {
         System.out.println("        |");
         System.out.println("        v");
     }
 
-    // ------------------------------------------------------------------
-    // Summary table
-    // ------------------------------------------------------------------
-
-    /**
-     * Counts node types and prints a statistics table.
-     */
+   
     private void printSummaryTable() {
         Map<LineType, Integer> counts = new HashMap<>();
         for (LineType t : LineType.values()) {
@@ -228,13 +155,7 @@ public class FlowchartGenerator {
         System.out.println();
     }
 
-    // ------------------------------------------------------------------
-    // Utility helpers
-    // ------------------------------------------------------------------
-
-    /**
-     * Truncates text to maxLen characters, pads shorter strings with spaces.
-     */
+    
     private String fit(String text, int maxLen) {
         if (text.length() > maxLen) {
             return text.substring(0, maxLen - 2) + "..";
@@ -242,9 +163,6 @@ public class FlowchartGenerator {
         return text;
     }
 
-    /**
-     * Repeats a character string n times (replaces String.repeat for older Java).
-     */
     private String repeat(String ch, int n) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) sb.append(ch);
